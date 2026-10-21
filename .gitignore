@@ -1,0 +1,31 @@
+# Dependencies and builds
+node_modules/
+dist/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+
+# SQLite data
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+data/
+
+# Env and logs
+.env
+.env.*
+!.env.example
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local AI tooling (skills, agents, per-machine settings)
+.claude/
+.impeccable/
