@@ -7,6 +7,6 @@
   },
   "scripts": {
     "start": "node scripts/start.mjs",
-    "test": "npm --prefix api test && npm --prefix web test"
+    "test": "node scripts/test.mjs"
   }
 }

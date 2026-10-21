@@ -43,7 +43,7 @@ then starts the API (3001) and the UI (3000). `Ctrl+C` stops both. The database 
 npm test
 ```
 
-Runs, in the root:
+Run it in the repository root (it installs dependencies first when they are missing). It runs:
 
 - **API (174 tests):**
   - `api/test/replay.test.ts` replays all 68 recorded requests in order, with their `X-Now`
