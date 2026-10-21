@@ -126,6 +126,9 @@ Line numbers refer to `docs/reference_recording.jsonl`.
   - The copy is in English.
   - XP shown on a quest is what it would earn if completed today, so overdue quests show half.
   - "Today" is computed in the browser with the user's time zone; the UI does not send `X-Now`.
+  - The page lists open quests first, then done ones, keeping the API's newest-first order inside
+    each group, so a Complete button is always near the top. The API order itself is unchanged.
+  - On a phone the create form folds behind a "New quest" button, so the list comes first.
 
 ## Summary: what I did, how I verified it, what I left out
 

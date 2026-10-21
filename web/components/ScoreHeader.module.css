@@ -13,7 +13,7 @@
   font-size: var(--size-body);
   font-weight: 800;
   letter-spacing: 0.14em;
-  color: var(--yellow);
+  color: var(--yellow-on-cobalt);
   margin-bottom: 10px;
 }
 
@@ -67,13 +67,37 @@
 .fill {
   height: 100%;
   background: var(--yellow);
-  transform-origin: left;
-  transition: transform 900ms var(--ease-out);
+  transition: width 900ms var(--ease-out);
 }
 
-/* Bonus ladder: one round insert per bonus step, lit up to today's bonus. */
-.ladder {
+/* An ink leading edge, so even a thin fill reads. */
+.filled {
+  border-right: 3px solid var(--ink);
+}
+
+/* Streak: its own reels, then the bonus ladder lit up to today's bonus. */
+.streak {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+}
+
+.streakCount {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.streakLabel {
+  display: grid;
+  gap: 2px;
+  color: var(--on-cobalt);
+  order: -1;
   text-align: right;
+}
+
+.streakLabel span {
+  color: var(--on-cobalt-soft);
 }
 
 .inserts {
@@ -81,7 +105,6 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 10px;
 }
 
 .inserts li {
@@ -112,7 +135,12 @@
     padding: 22px 16px 24px;
   }
 
-  .ladder {
+  .streak {
+    justify-items: start;
+  }
+
+  .streakLabel {
+    order: 1;
     text-align: left;
   }
 

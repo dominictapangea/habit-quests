@@ -13,6 +13,8 @@
   --on-cobalt: #ffffff;
   --on-cobalt-soft: #c9d6f2;
   --yellow: #f5b700;
+  /* Lighter yellow for text on cobalt: 5.2:1, where #f5b700 is only 4.1:1. */
+  --yellow-on-cobalt: #ffd34d;
   --reel: #141414;
   --reel-digit: #f4f1ea;
 
@@ -21,6 +23,8 @@
   --size-small: 13px;
   --size-body: 15px;
   --size-big: 38px;
+  /* The one sanctioned exception: the level-up moment speaks louder than the page. */
+  --size-display: 88px;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -52,8 +56,8 @@ body {
 }
 
 :focus-visible {
-  outline: 3px solid var(--red);
-  outline-offset: 2px;
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
 }
 
 button,

@@ -126,4 +126,9 @@
     grid-area: action;
     margin-top: 6px;
   }
+
+  /* The status line already says "Done"; no extra tag line on a phone. */
+  .doneTag {
+    display: none;
+  }
 }

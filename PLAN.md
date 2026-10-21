@@ -80,8 +80,11 @@ Tick each item when done; add new items as they come up.
 - [x] Optimistic updates: view = server snapshot + pending actions; full reload once idle;
       failure rolls back with a notice; reload on tab focus and when the day changes
 - [x] UI copy of the rules (`web/lib/rules.ts`) replayed against the recording (`web/test`)
-- [ ] Responsive check (desktop first, phone works) and accessibility pass
-- [ ] Finish review (impeccable reviewer) and DESIGN.md
+- [x] Responsive check (1440 + 390) and accessibility pass: 230 text nodes pass WCAG AA,
+      tab order, specific button names, brand yellow fixed (4.1 -> 5.2:1)
+- [x] Finish review (impeccable reviewer): fix round of 7 fixes, verdict ship
+- [x] DESIGN.md written from the built UI (impeccable documenter)
+- [x] UI lists open quests first (Dominic's choice; API order unchanged; in README)
 
 ## 4. Docker + README
 

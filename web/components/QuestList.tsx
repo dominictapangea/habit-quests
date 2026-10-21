@@ -5,6 +5,7 @@ import styles from "./QuestList.module.css";
 interface Props {
   quests: Quest[] | null;
   today: string;
+  lastDone: Map<string, string>; // quest id -> day of its latest live completion
   onComplete: (quest: Quest) => void;
 }
 
@@ -12,16 +13,19 @@ interface Props {
 const xpToday = (q: Quest, today: string) =>
   q.due_date !== null && q.due_date < today ? Math.floor(BASE_XP[q.difficulty] / 2) : BASE_XP[q.difficulty];
 
-function when(q: Quest, today: string): { text: string; overdue?: boolean } {
+function when(q: Quest, today: string, doneOn: string | undefined): { text: string; overdue?: boolean } {
   if (q.recurrence === "daily") return { text: q.done ? "Done today" : "Every day" };
-  if (q.due_date === null) return { text: q.done ? "Done" : "No due date" };
-  if (q.done) return { text: `Done · was due ${formatDay(q.due_date)}` };
+  if (q.done) {
+    const late = q.due_date !== null && doneOn !== undefined && doneOn > q.due_date;
+    return { text: doneOn ? `Done ${formatDay(doneOn)}${late ? " · late" : ""}` : "Done" };
+  }
+  if (q.due_date === null) return { text: "No due date" };
   if (q.due_date < today) return { text: `Overdue · ${formatDay(q.due_date)}`, overdue: true };
   if (q.due_date === today) return { text: "Due today" };
   return { text: `Due ${formatDay(q.due_date)}` };
 }
 
-export function QuestList({ quests, today, onComplete }: Props) {
+export function QuestList({ quests, today, lastDone, onComplete }: Props) {
   if (quests === null) {
     return <p className={styles.empty}>Loading quests…</p>;
   }
@@ -29,10 +33,14 @@ export function QuestList({ quests, today, onComplete }: Props) {
     return <p className={styles.empty}>No quests yet. Add your first one above.</p>;
   }
 
+  // Open quests first, so a Complete button is always near the top; within each
+  // group the API's order (newest first) is kept. The API itself is unchanged.
+  const ordered = [...quests.filter((q) => !q.done), ...quests.filter((q) => q.done)];
+
   return (
     <ul className={styles.list}>
-      {quests.map((q) => {
-        const w = when(q, today);
+      {ordered.map((q) => {
+        const w = when(q, today, lastDone.get(q.id));
         return (
           <li key={q.id} className={`${styles.row} ${q.done ? styles.done : ""}`}>
             <span className={`${styles.dot} ${styles[q.difficulty]}`} aria-hidden />
@@ -43,14 +51,14 @@ export function QuestList({ quests, today, onComplete }: Props) {
               </span>
             </div>
             <span className={w.overdue ? styles.overdue : styles.sub}>{w.text}</span>
-            <span className={styles.xp} aria-label={`${xpToday(q, today)} XP`}>
+            <span className={styles.xp}>
               {xpToday(q, today)}
               <small> XP</small>
             </span>
             {q.done ? (
               <span className={`label ${styles.doneTag}`}>Done</span>
             ) : (
-              <button className="btn btn-primary" onClick={() => onComplete(q)}>
+              <button type="button" className="btn btn-primary" onClick={() => onComplete(q)} aria-label={`Complete ${q.title}`}>
                 Complete
               </button>
             )}

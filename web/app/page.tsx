@@ -90,6 +90,13 @@ export default function Home() {
     [snapshot, pending, synced, today],
   );
 
+  // Day of each quest's latest live completion (completions are newest first).
+  const lastDone = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const c of view?.completions ?? []) if (!map.has(c.quest_id)) map.set(c.quest_id, c.day);
+    return map;
+  }, [view]);
+
   // The level-up moment, whenever the shown level goes up after the first load.
   const shownLevel = view?.me.level ?? null;
   const lastLevel = useRef<number | null>(null);
@@ -158,7 +165,7 @@ export default function Home() {
       {notice && (
         <div className={styles.alert} role="alert">
           <span>{notice}</span>
-          <button className="btn" onClick={() => setNotice(null)}>
+          <button type="button" className="btn" onClick={() => setNotice(null)}>
             Dismiss
           </button>
         </div>
@@ -174,7 +181,7 @@ export default function Home() {
             Quests
           </h2>
           <QuestForm today={today ?? ""} onCreate={onCreate} />
-          <QuestList quests={view?.quests ?? null} today={today ?? ""} onComplete={onComplete} />
+          <QuestList quests={view?.quests ?? null} today={today ?? ""} lastDone={lastDone} onComplete={onComplete} />
         </section>
 
         <div className={styles.side}>

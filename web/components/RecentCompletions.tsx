@@ -33,7 +33,13 @@ export function RecentCompletions({ completions, quests, timezone, onUndo }: Pro
             </div>
             <span className={styles.xp}>+{c.base_xp}</span>
             {/* A completion the server has not confirmed yet has no id to undo. */}
-            <button className="btn" onClick={() => onUndo(c)} disabled={c.id.startsWith("pending-")}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => onUndo(c)}
+              disabled={c.id.startsWith("pending-")}
+              aria-label={`Undo ${titles.get(c.quest_id) ?? "completion"}, ${formatDay(c.day)}`}
+            >
               {c.id.startsWith("pending-") ? "Saving…" : "Undo"}
             </button>
           </li>

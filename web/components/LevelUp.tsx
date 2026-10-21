@@ -13,10 +13,7 @@ export function LevelUp({ level }: { level: number }) {
     <div className={styles.overlay} aria-hidden>
       <div className={styles.band}>
         <div className={styles.lamps}>{lamps}</div>
-        <p className={styles.text}>
-          <span className="label">Level up</span>
-          <b>Level {level}</b>
-        </p>
+        <p className={styles.text}>Level {level}</p>
         <div className={styles.lamps}>{lamps}</div>
       </div>
     </div>

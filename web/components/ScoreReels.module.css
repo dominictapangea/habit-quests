@@ -48,3 +48,8 @@
   margin-left: 8px;
   color: var(--on-cobalt);
 }
+
+/* Loading: the drums are dark, no digit is shown. */
+.blank .digit {
+  visibility: hidden;
+}

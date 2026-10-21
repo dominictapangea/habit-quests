@@ -7,57 +7,57 @@ const LADDER = [2, 4, 6, 8, 10, 12, 14];
 // Same rule as the API: 2 x streak, capped at 14.
 export const dailyBonus = (streak: number) => Math.min(2 * streak, 14);
 
+// Until the first answer arrives the unit stays dark (blank reels, no numbers),
+// so the page never shows made-up values.
 export function ScoreHeader({ me }: { me: Me | null }) {
-  const level = me?.level ?? 1;
-  const into = me?.xp_into_level ?? 0;
-  const toNext = me?.xp_to_next_level ?? 100;
-  const levelSize = into + toNext;
-  const streak = me?.streak ?? 0;
-  const bonus = dailyBonus(streak);
+  const bonus = me ? dailyBonus(me.streak) : 0;
+  const levelSize = me ? me.xp_into_level + me.xp_to_next_level : 1;
+  const progress = me ? me.xp_into_level / levelSize : 0;
 
   return (
     <header className={styles.unit} aria-busy={me === null}>
       <div className={styles.score}>
         <h1 className={`label ${styles.brand}`}>Habit Quests</h1>
-        <ScoreReels value={me?.xp ?? 0} />
+        <ScoreReels value={me?.xp ?? null} unit="XP" />
       </div>
 
       <div className={styles.level}>
-        <div className={styles.badge} aria-label={`Level ${level}`}>
+        <div className={styles.badge} aria-label={me ? `Level ${me.level}` : "Level loading"}>
           <span className="label">Level</span>
-          <b>{level}</b>
+          <b>{me?.level ?? ""}</b>
         </div>
         <div className={styles.bar}>
           <div className={`label ${styles.meta}`}>
-            <span>
-              Level {level} → {level + 1}
-            </span>
-            <span>
-              {into} / {levelSize} XP
-            </span>
+            <span>{me ? `Level ${me.level} → ${me.level + 1}` : " "}</span>
+            <span>{me ? `${me.xp_into_level} / ${levelSize} XP` : ""}</span>
           </div>
           <div
             className={styles.track}
             role="progressbar"
-            aria-label={`Progress through level ${level}`}
+            aria-label={me ? `Progress through level ${me.level}` : "Level progress loading"}
             aria-valuemin={0}
             aria-valuemax={levelSize}
-            aria-valuenow={into}
+            aria-valuenow={me?.xp_into_level ?? 0}
           >
-            <div className={styles.fill} style={{ transform: `scaleX(${into / levelSize})` }} />
+            <div
+              className={`${styles.fill} ${progress > 0 ? styles.filled : ""}`}
+              style={{ width: `${progress * 100}%` }}
+            />
           </div>
           <div className={styles.meta}>
-            <span>
-              {toNext} XP to level {level + 1}
-            </span>
+            <span>{me ? `${me.xp_to_next_level} XP to level ${me.level + 1}` : " "}</span>
           </div>
         </div>
       </div>
 
-      <div className={styles.ladder}>
-        <p className="label">
-          {streak === 0 ? "No streak yet" : `${streak}-day streak · bonus +${bonus} XP a day`}
-        </p>
+      <div className={styles.streak}>
+        <div className={styles.streakCount}>
+          <ScoreReels value={me?.streak ?? null} unit={me?.streak === 1 ? "day" : "days"} minReels={2} />
+          <p className={`label ${styles.streakLabel}`}>
+            {me ? (me.streak === 0 ? "No streak yet" : "Streak") : " "}
+            <span>{me && me.streak > 0 ? `Daily bonus +${bonus} XP` : ""}</span>
+          </p>
+        </div>
         <ol className={styles.inserts} aria-label={`Daily bonus ladder, ${bonus} of 14 lit`}>
           {LADDER.map((step) => (
             <li key={step} className={step <= bonus ? styles.lit : undefined}>

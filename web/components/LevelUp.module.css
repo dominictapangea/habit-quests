@@ -19,20 +19,21 @@
 }
 
 .text {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 18px;
-  padding: 10px 16px;
+  padding: 4px 16px;
+  text-align: center;
   color: var(--ink);
-}
-
-.text b {
-  font-size: var(--size-big);
+  font-size: var(--size-display);
+  line-height: 1;
   font-weight: 800;
   font-stretch: 62%;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .text {
+    font-size: calc(var(--size-display) * 0.6);
+  }
 }
 
 .lamps {

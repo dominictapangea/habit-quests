@@ -71,8 +71,9 @@
 }
 
 .segment input:focus-visible + span {
-  outline: 3px solid var(--red);
-  outline-offset: -5px;
+  box-shadow:
+    inset 0 0 0 3px #fff,
+    inset 0 0 0 6px var(--ink);
 }
 
 .date {
@@ -88,4 +89,26 @@
   flex-basis: 100%;
   color: var(--red-dark);
   font-weight: 600;
+}
+
+/* Phone: the form folds behind a "New quest" button. */
+.toggle {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .toggle {
+    display: block;
+    width: calc(100% - 36px);
+    margin: 18px;
+  }
+
+  .form {
+    display: none;
+    border-top: 2px solid var(--ink);
+  }
+
+  .form.open {
+    display: flex;
+  }
 }

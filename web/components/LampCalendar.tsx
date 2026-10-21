@@ -50,11 +50,12 @@ export function LampCalendar({ days, today }: Props) {
   return (
     <div className={styles.calendar}>
       <div className={styles.head}>
-        <button className={styles.nav} onClick={() => setMonth(shiftMonth(month, -1))} aria-label="Previous month">
+        <button type="button" className={styles.nav} onClick={() => setMonth(shiftMonth(month, -1))} aria-label="Previous month">
           <Chevron flip />
         </button>
         <h3 className={styles.month}>{monthName(month)}</h3>
         <button
+          type="button"
           className={styles.nav}
           onClick={() => setMonth(shiftMonth(month, 1))}
           aria-label="Next month"
