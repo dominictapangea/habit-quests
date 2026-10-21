@@ -90,8 +90,9 @@ Tick each item when done; add new items as they come up.
       reproduced, data kept after `down` + `up` (volume `habit-data`)
 - [x] One non-Docker command to start both: `npm start` in the root (installs if needed,
       builds the UI, runs both); tested in a clean copy with no node_modules
-- [ ] README: install/run, rules with line numbers, choices, weakest points, AI line,
+- [x] README: install/run, rules with line numbers, choices, weakest points, AI line,
       things noticed and not fixed, half-page summary
+- [x] Dominic confirmed the AI line
 
 ## 5. Clean-machine check
 
