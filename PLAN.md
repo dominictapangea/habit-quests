@@ -25,20 +25,22 @@ Tick each item when done; add new items as they come up.
 
 ## 1. Rules (`api/src/rules.ts`) + unit tests
 
-- [ ] Scaffold `api/` (TypeScript, test runner)
-- [ ] Day of a timestamp in a time zone (incl. DST, lines 63-64)
-- [ ] Base XP: difficulty values, late one-off = half rounded down (lines 15, 17, 25, 57)
-- [ ] Daily bonus: 2 x streak capped at 14, once per day (lines 9, 14, 16, 23, 24, 31)
-- [ ] Streak ending today or yesterday, else 0 (lines 13, 33, 34, 61)
-- [ ] Level thresholds 100 x n, `xp_into_level`, `xp_to_next_level` (lines 1, 17, 31)
-- [ ] `computeMe` from live completions; undo recomputes later bonuses (lines 45-46)
-- [ ] `done` for one-off vs daily (lines 12, 41, 53, 68)
-- [ ] Check every rule against the recording's numbers
+- [x] Scaffold `api/` (TypeScript, test runner)
+- [x] Day of a timestamp in a time zone (incl. DST, lines 63-64)
+- [x] Base XP: difficulty values, late one-off = half rounded down (lines 15, 17, 25, 57)
+- [x] Daily bonus: 2 x streak capped at 14, once per day (lines 9, 14, 16, 23, 24, 31)
+- [x] Streak ending today or yesterday, else 0 (lines 13, 33, 34, 61)
+- [x] Level thresholds 100 x n, `xp_into_level`, `xp_to_next_level` (lines 1, 17, 31)
+- [x] `computeMe` from live completions; undo recomputes later bonuses (lines 45-46)
+- [x] `done` for one-off vs daily (lines 12, 41, 53, 68)
+- [x] Check every rule against the recording's numbers (`test/rules-recording.test.ts`, 68 lines)
+- [x] Mutation check: breaking the bonus cap makes 33 recording lines fail
 
 ## 2. API (Fastify + SQLite)
 
 - [ ] SQLite schema: quests, completions (with undone flag), settings (time zone)
-- [ ] `X-Now` handling
+- [ ] `X-Now` handling (400 `invalid X-Now` when malformed)
+- [ ] Input validation module (title, difficulty, due_date, recurrence) + unit tests
 - [ ] `POST /quests` with validation and exact error messages (lines 6, 7, 8)
 - [ ] `GET /quests` newest first with `done`
 - [ ] `POST /quests/:id/complete` 201 new / 200 existing / 404 (lines 9-11, 52)
