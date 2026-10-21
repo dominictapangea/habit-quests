@@ -5,7 +5,6 @@ import styles from "./QuestList.module.css";
 interface Props {
   quests: Quest[] | null;
   today: string;
-  completing: Set<string>;
   onComplete: (quest: Quest) => void;
 }
 
@@ -22,7 +21,7 @@ function when(q: Quest, today: string): { text: string; overdue?: boolean } {
   return { text: `Due ${formatDay(q.due_date)}` };
 }
 
-export function QuestList({ quests, today, completing, onComplete }: Props) {
+export function QuestList({ quests, today, onComplete }: Props) {
   if (quests === null) {
     return <p className={styles.empty}>Loading quests…</p>;
   }
@@ -34,7 +33,6 @@ export function QuestList({ quests, today, completing, onComplete }: Props) {
     <ul className={styles.list}>
       {quests.map((q) => {
         const w = when(q, today);
-        const busy = completing.has(q.id);
         return (
           <li key={q.id} className={`${styles.row} ${q.done ? styles.done : ""}`}>
             <span className={`${styles.dot} ${styles[q.difficulty]}`} aria-hidden />
@@ -52,8 +50,8 @@ export function QuestList({ quests, today, completing, onComplete }: Props) {
             {q.done ? (
               <span className={`label ${styles.doneTag}`}>Done</span>
             ) : (
-              <button className="btn btn-primary" onClick={() => onComplete(q)} disabled={busy}>
-                {busy ? "Saving…" : "Complete"}
+              <button className="btn btn-primary" onClick={() => onComplete(q)}>
+                Complete
               </button>
             )}
           </li>

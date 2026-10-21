@@ -1,0 +1,89 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  background: rgb(20 20 20 / 0.18);
+  animation: dim 1500ms var(--ease-out) both;
+}
+
+.band {
+  width: 100%;
+  background: var(--yellow);
+  border-block: 4px solid var(--ink);
+  padding: 14px 0;
+  animation: open 450ms var(--ease-out) both;
+  box-shadow: 0 12px 40px rgb(20 20 20 / 0.35);
+}
+
+.text {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 18px;
+  padding: 10px 16px;
+  color: var(--ink);
+}
+
+.text b {
+  font-size: var(--size-big);
+  font-weight: 800;
+  font-stretch: 62%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lamps {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.lamps span {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: var(--red);
+  animation: chase 420ms steps(1) infinite;
+}
+
+/* The band opens from the centre line. */
+@keyframes open {
+  from {
+    clip-path: inset(50% 0 50% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes dim {
+  0%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes chase {
+  0% {
+    background: var(--red);
+  }
+  50% {
+    background: #fff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    animation: none;
+  }
+  .lamps span {
+    animation: none;
+  }
+}

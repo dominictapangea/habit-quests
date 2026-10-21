@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LampCalendar } from "@/components/LampCalendar";
+import { LevelUp } from "@/components/LevelUp";
 import { QuestForm } from "@/components/QuestForm";
 import { QuestList } from "@/components/QuestList";
 import { RecentCompletions } from "@/components/RecentCompletions";
@@ -14,42 +15,44 @@ import {
   getQuests,
   undoCompletion,
   type Completion,
-  type Me,
   type NewQuest,
   type Quest,
 } from "@/lib/api";
 import { todayIn } from "@/lib/dates";
+import { applyCompleted, applyUndone, deriveView, predictCompletion, type Pending, type Snapshot } from "@/lib/view";
 import styles from "./page.module.css";
 
-const without = (set: Set<string>, id: string) => {
-  const next = new Set(set);
-  next.delete(id);
-  return next;
-};
+const LEVEL_UP_MS = 1500;
 
 export default function Home() {
-  const [me, setMe] = useState<Me | null>(null);
-  const [quests, setQuests] = useState<Quest[] | null>(null);
-  const [completions, setCompletions] = useState<Completion[] | null>(null);
-  const [completing, setCompleting] = useState<Set<string>>(new Set());
-  const [undoing, setUndoing] = useState<Set<string>>(new Set());
-  const [error, setError] = useState<string | null>(null);
-
-  // "Today" in the user's time zone. Only computed in the browser, after the
-  // first load, so the server render never reads the clock.
+  // Server truth, actions in flight, and whether the snapshot is fresh.
+  const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
+  const [pending, setPending] = useState<Pending[]>([]);
+  const [synced, setSynced] = useState(true);
+  // "Today" in the user's time zone, only computed in the browser.
   const [today, setToday] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [levelUp, setLevelUp] = useState<number | null>(null);
 
-  // Reload everything from the server, the source of truth.
+  const pendingRef = useRef(pending);
+  useEffect(() => {
+    pendingRef.current = pending;
+  }, [pending]);
+  const nextOp = useRef(0);
+
+  // Reload everything from the server. A reload that finishes while actions
+  // are still in flight is thrown away; the next idle moment reloads again.
   const refresh = useCallback(async () => {
     try {
-      const [nextMe, nextQuests, nextCompletions] = await Promise.all([getMe(), getQuests(), getCompletions()]);
-      setMe(nextMe);
-      setToday(todayIn(nextMe.timezone));
-      setQuests(nextQuests);
-      setCompletions(nextCompletions);
-      setError(null);
+      const [me, quests, completions] = await Promise.all([getMe(), getQuests(), getCompletions()]);
+      if (pendingRef.current.length > 0) return;
+      setSnapshot({ me, quests, completions });
+      setToday(todayIn(me.timezone));
+      setSynced(true);
+      setLoadError(null);
     } catch (e) {
-      setError((e as Error).message);
+      setLoadError((e as Error).message);
     }
   }, []);
 
@@ -59,54 +62,119 @@ export default function Home() {
     refresh();
   }, [refresh]);
 
+  // Once every action has been answered, reconcile with a full reload.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (pending.length === 0 && !synced) refresh();
+  }, [pending.length, synced, refresh]);
+
+  // The page stays open all day: pick up a new day (and other tabs' changes)
+  // when it becomes visible again, and check the date every 30 s.
+  useEffect(() => {
+    const timezone = snapshot?.me.timezone;
+    if (!timezone) return;
+    const check = () => {
+      if (todayIn(timezone) !== today && pendingRef.current.length === 0) refresh();
+    };
+    const onVisible = () => document.visibilityState === "visible" && pendingRef.current.length === 0 && refresh();
+    const timer = setInterval(check, 30_000);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [snapshot?.me.timezone, today, refresh]);
+
+  const view = useMemo(
+    () => (snapshot && today ? deriveView(snapshot, pending, synced, today) : null),
+    [snapshot, pending, synced, today],
+  );
+
+  // The level-up moment, whenever the shown level goes up after the first load.
+  const shownLevel = view?.me.level ?? null;
+  const lastLevel = useRef<number | null>(null);
+  useEffect(() => {
+    if (shownLevel === null) return;
+    if (lastLevel.current !== null && shownLevel > lastLevel.current) {
+      setLevelUp(shownLevel);
+      const timer = setTimeout(() => setLevelUp(null), LEVEL_UP_MS);
+      lastLevel.current = shownLevel;
+      return () => clearTimeout(timer);
+    }
+    lastLevel.current = shownLevel;
+  }, [shownLevel]);
+
+  const finish = (opId: string) => setPending((p) => p.filter((x) => x.opId !== opId));
+
   async function onCreate(quest: NewQuest) {
     const created = await createQuest(quest);
-    setQuests((qs) => [created, ...(qs ?? [])]);
+    setSnapshot((s) => s && { ...s, quests: [created, ...s.quests] });
   }
 
   async function onComplete(quest: Quest) {
-    setCompleting((s) => new Set(s).add(quest.id));
+    if (!view || !today || view.quests.find((q) => q.id === quest.id)?.done) return;
+    const opId = String(nextOp.current++);
+    setPending((p) => [...p, { kind: "complete", opId, completion: predictCompletion(quest, today, new Date(), opId) }]);
+    setSynced(false);
     try {
       const res = await completeQuest(quest.id);
-      setMe(res.me);
-      await refresh();
+      setSnapshot((s) => s && applyCompleted(s, res.completion, res.me));
     } catch (e) {
-      setError((e as Error).message);
+      setNotice(`Could not complete “${quest.title}”: ${(e as Error).message}. Your score is back to what the server has.`);
     } finally {
-      setCompleting((s) => without(s, quest.id));
+      finish(opId);
     }
   }
 
   async function onUndo(completion: Completion) {
-    setUndoing((s) => new Set(s).add(completion.id));
+    const opId = String(nextOp.current++);
+    setPending((p) => [...p, { kind: "undo", opId, completionId: completion.id }]);
+    setSynced(false);
     try {
       await undoCompletion(completion.id);
+      setSnapshot((s) => s && applyUndone(s, completion.id));
     } catch (e) {
-      setError((e as Error).message);
+      setNotice(`Could not undo: ${(e as Error).message}. The list is back to what the server has.`);
     } finally {
-      // Undo can change bonuses of later days, so reload everything.
-      await refresh();
-      setUndoing((s) => without(s, completion.id));
+      finish(opId);
     }
   }
 
-  const ready = today !== null;
+  // Failure notices go away on their own.
+  useEffect(() => {
+    if (!notice) return;
+    const timer = setTimeout(() => setNotice(null), 8000);
+    return () => clearTimeout(timer);
+  }, [notice]);
 
   return (
     <>
-      <ScoreHeader me={me} />
-      {error && (
+      <ScoreHeader me={view?.me ?? null} />
+      {loadError && (
         <p className={styles.alert} role="alert">
-          Could not reach the API ({error}). Check that it is running on port 3001, then reload.
+          Could not reach the API ({loadError}). Check that it is running on port 3001, then reload.
         </p>
       )}
+      {notice && (
+        <div className={styles.alert} role="alert">
+          <span>{notice}</span>
+          <button className="btn" onClick={() => setNotice(null)}>
+            Dismiss
+          </button>
+        </div>
+      )}
+      <p className="visually-hidden" role="status">
+        {levelUp !== null ? `Level up! You reached level ${levelUp}.` : ""}
+      </p>
+      {levelUp !== null && <LevelUp level={levelUp} />}
+
       <main className={styles.main}>
         <section className="area" aria-labelledby="quests-tab">
           <h2 id="quests-tab" className="area-tab label">
             Quests
           </h2>
           <QuestForm today={today ?? ""} onCreate={onCreate} />
-          <QuestList quests={ready ? quests : null} today={today ?? ""} completing={completing} onComplete={onComplete} />
+          <QuestList quests={view?.quests ?? null} today={today ?? ""} onComplete={onComplete} />
         </section>
 
         <div className={styles.side}>
@@ -114,7 +182,7 @@ export default function Home() {
             <h2 id="calendar-tab" className="area-tab label">
               Streak calendar
             </h2>
-            {ready && <LampCalendar days={(completions ?? []).map((c) => c.day)} today={today} />}
+            {view && today && <LampCalendar days={view.completions.map((c) => c.day)} today={today} />}
           </section>
 
           <section className="area" aria-labelledby="recent-tab">
@@ -122,10 +190,9 @@ export default function Home() {
               Recent completions
             </h2>
             <RecentCompletions
-              completions={ready ? completions : null}
-              quests={quests ?? []}
-              timezone={me?.timezone ?? "Europe/Bucharest"}
-              undoing={undoing}
+              completions={view?.completions ?? null}
+              quests={view?.quests ?? []}
+              timezone={view?.me.timezone ?? "Europe/Bucharest"}
               onUndo={onUndo}
             />
           </section>

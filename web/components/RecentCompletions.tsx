@@ -6,13 +6,12 @@ interface Props {
   completions: Completion[] | null;
   quests: Quest[];
   timezone: string;
-  undoing: Set<string>;
   onUndo: (completion: Completion) => void;
 }
 
 const SHOWN = 8;
 
-export function RecentCompletions({ completions, quests, timezone, undoing, onUndo }: Props) {
+export function RecentCompletions({ completions, quests, timezone, onUndo }: Props) {
   if (completions === null) return <p className={styles.empty}>Loading…</p>;
   if (completions.length === 0) {
     return <p className={styles.empty}>Nothing completed yet. Finished quests show up here, with Undo.</p>;
@@ -33,8 +32,9 @@ export function RecentCompletions({ completions, quests, timezone, undoing, onUn
               </span>
             </div>
             <span className={styles.xp}>+{c.base_xp}</span>
-            <button className="btn" onClick={() => onUndo(c)} disabled={undoing.has(c.id)}>
-              {undoing.has(c.id) ? "Undoing…" : "Undo"}
+            {/* A completion the server has not confirmed yet has no id to undo. */}
+            <button className="btn" onClick={() => onUndo(c)} disabled={c.id.startsWith("pending-")}>
+              {c.id.startsWith("pending-") ? "Saving…" : "Undo"}
             </button>
           </li>
         ))}
