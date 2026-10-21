@@ -86,7 +86,8 @@ Tick each item when done; add new items as they come up.
 ## 4. Docker + README
 
 - [x] Dockerfiles + `docker-compose.yml` (API 3001, UI 3000, persistent SQLite volume) - written
-- [ ] Run `docker compose up` for real (Docker Desktop being installed)
+- [x] `docker compose up --build` from a fresh `git clone`: both services up, recorded line 9
+      reproduced, data kept after `down` + `up` (volume `habit-data`)
 - [x] One non-Docker command to start both: `npm start` in the root (installs if needed,
       builds the UI, runs both); tested in a clean copy with no node_modules
 - [ ] README: install/run, rules with line numbers, choices, weakest points, AI line,
