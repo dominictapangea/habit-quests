@@ -28,6 +28,8 @@ Tick each item when done; add new items as they come up.
   `invalid JSON`; unknown route -> 404 `not found`; `PUT /me` without a string `timezone`
   -> 400 `invalid timezone`.
 - `POST /test/reset` also resets the time zone to `Europe/Bucharest` and the id sequences.
+- UI fonts are self-hosted (`@fontsource-variable/archivo`) so the Docker build needs no
+  Google Fonts download.
 - Storage: Node's built-in `node:sqlite` (no native build on a clean machine; needs Node
   >= 22.13). Node runs the TypeScript files directly (type stripping), no build step.
 
@@ -65,7 +67,9 @@ Tick each item when done; add new items as they come up.
 
 - [x] Design direction: Playfield Scoring (pinball score reels, bonus ladder 2-14) + month lamp
       calendar; contract in `.impeccable/surfaces/web-app-page-tsx.md`
-- [ ] XP bar: level, progress, streak
+- [x] Scaffold `web/` (Next.js 16, CSS modules, self-hosted Archivo via fontsource)
+- [x] Score header: XP on rolling reels, level badge, XP bar, bonus ladder 2-14 (live `/me`)
+- [ ] Show the API error state properly (styled), not just a plain line
 - [ ] Level-up moment (page-wide lamp flash ~1.5 s, never blocking; reduced motion = instant)
 - [ ] Month lamp calendar from `/completions` (lit days, today ringed, current chain)
 - [ ] Create-quest form (title, difficulty, due date or daily)

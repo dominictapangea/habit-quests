@@ -1,0 +1,91 @@
+/* Playfield world: white enamel ground, ink, screened red, cobalt, sunflower yellow. */
+:root {
+  --ground: #fafaf7;
+  --ink: #141414;
+  --ink-soft: #3a3a36;
+  --mute: #62615b;
+  --hairline: #d8d4c8;
+  --red: #d7261e;
+  --red-dark: #a91b15;
+  --cobalt: #1f4fb4;
+  --cobalt-deep: #163c8c;
+  --cobalt-lamp-off: #18418f;
+  --on-cobalt: #ffffff;
+  --on-cobalt-soft: #c9d6f2;
+  --yellow: #f5b700;
+  --reel: #141414;
+  --reel-digit: #f4f1ea;
+
+  --font: "Archivo Variable", "Archivo", system-ui, sans-serif;
+  /* Three type sizes for the whole page; rank comes from weight and case. */
+  --size-small: 13px;
+  --size-body: 15px;
+  --size-big: 38px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--size-body);
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  scrollbar-color: var(--ink-soft) var(--ground);
+}
+
+body {
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 2px;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Narrow uppercase label voice, used for every small heading and tab. */
+.label {
+  font-stretch: 62%;
+  font-weight: 700;
+  font-size: var(--size-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}

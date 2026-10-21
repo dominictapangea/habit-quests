@@ -29,3 +29,6 @@ Thumbs.db
 # Local AI tooling (skills, agents, per-machine settings)
 .claude/
 .impeccable/
+
+# Browser automation output
+.playwright-mcp/

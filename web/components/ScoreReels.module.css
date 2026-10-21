@@ -1,0 +1,50 @@
+.reels {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.window {
+  --h: 62px;
+  position: relative;
+  width: 44px;
+  height: var(--h);
+  overflow: hidden;
+  border-radius: 5px;
+  background: var(--reel);
+}
+
+/* Curved-drum shading: the digit darkens towards the top and bottom edges. */
+.window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0.7),
+    rgb(0 0 0 / 0) 28%,
+    rgb(0 0 0 / 0) 72%,
+    rgb(0 0 0 / 0.7)
+  );
+  pointer-events: none;
+}
+
+.drum {
+  display: flex;
+  flex-direction: column;
+  transition: transform 900ms var(--ease-out);
+}
+
+.digit {
+  height: var(--h);
+  display: grid;
+  place-items: center;
+  font-size: var(--size-big);
+  font-weight: 700;
+  color: var(--reel-digit);
+}
+
+.unit {
+  margin-left: 8px;
+  color: var(--on-cobalt);
+}
