@@ -71,11 +71,11 @@ Tick each item when done; add new items as they come up.
 - [x] Score header: XP on rolling reels, level badge, XP bar, bonus ladder 2-14 (live `/me`)
 - [ ] Show the API error state properly (styled), not just a plain line
 - [ ] Level-up moment (page-wide lamp flash ~1.5 s, never blocking; reduced motion = instant)
-- [ ] Month lamp calendar from `/completions` (lit days, today ringed, current chain)
+- [x] Month lamp calendar from `/completions` (lit days, today ringed, current chain, older lit days pale, month nav)
 - [x] Create-quest form (title, difficulty, no date / due date / daily; client checks + server errors)
 - [x] Quest list: Complete, done state (grayscale), overdue flag, XP if completed today (half when late)
 - [x] "Today" computed only in the browser (no clock read during server render)
-- [ ] Recent completions with Undo
+- [x] Recent completions with Undo (last 8; undo reloads everything, later-day bonuses included)
 - [ ] Optimistic updates that always reconcile with the server (errors, refresh)
 - [ ] Responsive check (desktop first, phone works) and accessibility pass
 - [ ] Finish review (impeccable reviewer) and DESIGN.md

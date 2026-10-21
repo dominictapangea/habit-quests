@@ -65,5 +65,8 @@ export const getMe = () => request<Me>("/me");
 export const getQuests = () => request<Quest[]>("/quests");
 export const createQuest = (quest: NewQuest) =>
   request<Quest>("/quests", { method: "POST", body: JSON.stringify(quest) });
-export const completeQuest = (id: string) =>
+export const getCompletions = () => request<Completion[]>("/completions");
+export const undoCompletion = (id: string) =>
+  request<void>(`/completions/${encodeURIComponent(id)}`, { method: "DELETE" });
+export const completeQuest =(id: string) =>
   request<{ completion: Completion; me: Me }>(`/quests/${encodeURIComponent(id)}/complete`, { method: "POST" });

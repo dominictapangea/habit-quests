@@ -6,6 +6,11 @@
   align-items: start;
 }
 
+.side {
+  display: grid;
+  gap: 28px;
+}
+
 .alert {
   margin: 24px 56px 0;
   padding: 14px 18px;
