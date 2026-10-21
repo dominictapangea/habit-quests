@@ -1,0 +1,22 @@
+services:
+  api:
+    build: ./api
+    ports:
+      - "3001:3001"
+    volumes:
+      - habit-data:/data # SQLite file, kept across restarts and rebuilds
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  habit-data:

@@ -30,6 +30,7 @@ Tick each item when done; add new items as they come up.
 - `POST /test/reset` also resets the time zone to `Europe/Bucharest` and the id sequences.
 - UI fonts are self-hosted (`@fontsource-variable/archivo`) so the Docker build needs no
   Google Fonts download.
+- Node >= 22.18 is required without Docker (type stripping and `node:sqlite` unflagged).
 - Storage: Node's built-in `node:sqlite` (no native build on a clean machine; needs Node
   >= 22.13). Node runs the TypeScript files directly (type stripping), no build step.
 
@@ -84,8 +85,10 @@ Tick each item when done; add new items as they come up.
 
 ## 4. Docker + README
 
-- [ ] Dockerfiles + `docker-compose.yml` (API 3001, UI 3000, persistent SQLite volume)
-- [ ] One non-Docker command to start both
+- [x] Dockerfiles + `docker-compose.yml` (API 3001, UI 3000, persistent SQLite volume) - written
+- [ ] Run `docker compose up` for real (Docker Desktop being installed)
+- [x] One non-Docker command to start both: `npm start` in the root (installs if needed,
+      builds the UI, runs both); tested in a clean copy with no node_modules
 - [ ] README: install/run, rules with line numbers, choices, weakest points, AI line,
       things noticed and not fixed, half-page summary
 

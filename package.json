@@ -1,0 +1,12 @@
+{
+  "name": "habit-quests",
+  "private": true,
+  "description": "Habit Quests: Fastify + SQLite API (port 3001) and Next.js UI (port 3000).",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "start": "node scripts/start.mjs",
+    "test": "npm --prefix api test && npm --prefix web test"
+  }
+}
