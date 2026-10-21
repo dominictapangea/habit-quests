@@ -1,0 +1,129 @@
+.list {
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) 190px 64px 132px;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+}
+
+.easy {
+  background: var(--yellow);
+}
+
+.medium {
+  background: var(--cobalt);
+}
+
+.hard {
+  background: var(--red);
+}
+
+.main {
+  display: grid;
+  min-width: 0;
+}
+
+.title {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.sub {
+  color: var(--mute);
+  font-size: var(--size-small);
+}
+
+.difficulty {
+  text-transform: capitalize;
+}
+
+.overdue {
+  color: var(--red-dark);
+  font-size: var(--size-small);
+  font-weight: 700;
+}
+
+/* XP column: right-aligned, tabular, like running times on a tracklist. */
+.xp {
+  text-align: right;
+  font-weight: 700;
+}
+
+.xp small {
+  font-size: var(--size-small);
+  font-weight: 600;
+  color: var(--mute);
+}
+
+.row :global(.btn) {
+  width: 100%;
+}
+
+.doneTag {
+  text-align: center;
+  color: var(--mute);
+}
+
+/* Done quests drop to grayscale: the same retired state everywhere. */
+.done .dot {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.done .title,
+.done .xp {
+  color: var(--mute);
+}
+
+.empty {
+  padding: 28px 18px;
+  color: var(--mute);
+}
+
+@media (max-width: 720px) {
+  .row {
+    grid-template-columns: 14px minmax(0, 1fr) auto;
+    grid-template-areas:
+      "dot main xp"
+      ". when when"
+      ". action action";
+    gap: 6px 12px;
+  }
+
+  .dot {
+    grid-area: dot;
+  }
+
+  .main {
+    grid-area: main;
+  }
+
+  .row > :nth-child(3) {
+    grid-area: when;
+  }
+
+  .xp {
+    grid-area: xp;
+  }
+
+  .row > :nth-child(5) {
+    grid-area: action;
+    margin-top: 6px;
+  }
+}

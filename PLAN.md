@@ -72,8 +72,9 @@ Tick each item when done; add new items as they come up.
 - [ ] Show the API error state properly (styled), not just a plain line
 - [ ] Level-up moment (page-wide lamp flash ~1.5 s, never blocking; reduced motion = instant)
 - [ ] Month lamp calendar from `/completions` (lit days, today ringed, current chain)
-- [ ] Create-quest form (title, difficulty, due date or daily)
-- [ ] Quest list: Complete, done state, overdue flag
+- [x] Create-quest form (title, difficulty, no date / due date / daily; client checks + server errors)
+- [x] Quest list: Complete, done state (grayscale), overdue flag, XP if completed today (half when late)
+- [x] "Today" computed only in the browser (no clock read during server render)
 - [ ] Recent completions with Undo
 - [ ] Optimistic updates that always reconcile with the server (errors, refresh)
 - [ ] Responsive check (desktop first, phone works) and accessibility pass

@@ -1,0 +1,91 @@
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px 16px;
+  padding: 18px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.title {
+  flex: 1 1 260px;
+  display: grid;
+  gap: 6px;
+}
+
+.group {
+  border: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.group legend {
+  padding: 0;
+  margin-bottom: 6px;
+}
+
+.segments {
+  display: flex;
+  border: 2px solid var(--ink);
+  height: 44px;
+}
+
+.segment {
+  position: relative;
+  display: flex;
+}
+
+.segment + .segment {
+  border-left: 2px solid var(--ink);
+}
+
+/* The radio stays in the accessibility tree; the label face is the control. */
+.segment input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+}
+
+.segment span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  background: #fff;
+  transition: background-color 150ms var(--ease-out);
+}
+
+.segment span b {
+  font-weight: 700;
+  color: var(--mute);
+}
+
+.segment input:checked + span {
+  background: var(--ink);
+  color: #fff;
+}
+
+.segment input:checked + span b {
+  color: var(--yellow);
+}
+
+.segment input:focus-visible + span {
+  outline: 3px solid var(--red);
+  outline-offset: -5px;
+}
+
+.date {
+  display: grid;
+  gap: 6px;
+}
+
+.submit {
+  margin-left: auto;
+}
+
+.error {
+  flex-basis: 100%;
+  color: var(--red-dark);
+  font-weight: 600;
+}

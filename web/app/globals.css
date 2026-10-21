@@ -72,6 +72,77 @@ select {
   text-transform: uppercase;
 }
 
+/* Work areas: a 2px ink frame headed by a small black tab label. */
+.area {
+  border: 2px solid var(--ink);
+  background: #fff;
+}
+
+.area-tab {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--ground);
+  padding: 6px 14px;
+  margin: -2px 0 0 -2px;
+}
+
+/* Buttons */
+.btn {
+  height: 44px;
+  padding: 0 20px;
+  border: 2px solid var(--ink);
+  background: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 150ms var(--ease-out),
+    transform 80ms var(--ease-out);
+}
+
+.btn:hover:not(:disabled) {
+  background: #f0ede4;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.btn-primary {
+  background: var(--red);
+  color: #fff;
+  font-stretch: 62%;
+  font-size: var(--size-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--red-dark);
+}
+
+/* Text inputs and selects */
+.field {
+  height: 44px;
+  padding: 0 12px;
+  border: 2px solid var(--ink);
+  background: #fff;
+  border-radius: 0;
+}
+
+.field::placeholder {
+  color: var(--mute);
+}
+
+.field[aria-invalid="true"] {
+  border-color: var(--red);
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

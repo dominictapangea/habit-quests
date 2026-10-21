@@ -11,6 +11,34 @@ export interface Me {
   streak: number;
 }
 
+export type Difficulty = "easy" | "medium" | "hard";
+
+export interface Quest {
+  id: string;
+  title: string;
+  difficulty: Difficulty;
+  due_date: string | null;
+  recurrence: "daily" | null;
+  done: boolean;
+}
+
+export interface Completion {
+  id: string;
+  quest_id: string;
+  day: string;
+  base_xp: number;
+  created_at: string;
+}
+
+export interface NewQuest {
+  title: string;
+  difficulty: Difficulty;
+  due_date?: string;
+  recurrence?: "daily";
+}
+
+export const BASE_XP: Record<Difficulty, number> = { easy: 10, medium: 25, hard: 50 };
+
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -34,3 +62,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const getMe = () => request<Me>("/me");
+export const getQuests = () => request<Quest[]>("/quests");
+export const createQuest = (quest: NewQuest) =>
+  request<Quest>("/quests", { method: "POST", body: JSON.stringify(quest) });
+export const completeQuest = (id: string) =>
+  request<{ completion: Completion; me: Me }>(`/quests/${encodeURIComponent(id)}/complete`, { method: "POST" });
