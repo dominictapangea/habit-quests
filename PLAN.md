@@ -9,8 +9,19 @@ Tick each item when done; add new items as they come up.
 - [x] `PRODUCT.md` (product context for design work)
 - [x] Decide UI copy language: English
 - [x] `git init`, `.gitignore`, `.gitattributes` (LF endings for Docker), first commit
-- [ ] Answer the open choices from `CLAUDE.md` (XP on a threshold, title trimming / limits,
-      invalid or past `due_date`, unknown recurrence, malformed `X-Now`)
+- [x] Answer the open choices from `CLAUDE.md` (see Decisions below; copy them into the README)
+
+## Decisions (neither the spec nor the recording settles these)
+
+- XP exactly on a threshold: the level is reached (100 XP = level 2, 0/200).
+  `xp_to_next_level` is never 0, as in the recording.
+- Daily quest not completed today: `done: false` (never shown in the recording).
+- Title: missing or not a string -> 400 `invalid title`; whitespace-only -> 400; length
+  1-100 counted on the title as sent; stored unchanged (no trimming).
+- `due_date`: must be `yyyy-mm-dd` and a real calendar date, else 400 `invalid due_date`.
+  A past date is allowed (the quest is simply late). `null` means none.
+- `recurrence`: only `"daily"` or `null`, else 400 `invalid recurrence`.
+- Malformed `X-Now` (unparseable or without an offset): 400 `invalid X-Now`.
 
 ## 1. Rules (`api/src/rules.ts`) + unit tests
 
