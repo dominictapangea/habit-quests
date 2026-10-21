@@ -63,14 +63,17 @@ Tick each item when done; add new items as they come up.
 
 ## 3. UI (Next.js, English copy)
 
-- [ ] Design direction (impeccable new-work, ui-ux-pro-max)
+- [x] Design direction: Playfield Scoring (pinball score reels, bonus ladder 2-14) + month lamp
+      calendar; contract in `.impeccable/surfaces/web-app-page-tsx.md`
 - [ ] XP bar: level, progress, streak
-- [ ] Level-up moment
+- [ ] Level-up moment (page-wide lamp flash ~1.5 s, never blocking; reduced motion = instant)
+- [ ] Month lamp calendar from `/completions` (lit days, today ringed, current chain)
 - [ ] Create-quest form (title, difficulty, due date or daily)
 - [ ] Quest list: Complete, done state, overdue flag
 - [ ] Recent completions with Undo
 - [ ] Optimistic updates that always reconcile with the server (errors, refresh)
 - [ ] Responsive check (desktop first, phone works) and accessibility pass
+- [ ] Finish review (impeccable reviewer) and DESIGN.md
 
 ## 4. Docker + README
 
