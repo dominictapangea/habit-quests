@@ -103,4 +103,4 @@ Tick each item when done; add new items as they come up.
       68/68 recorded requests match over real HTTP, data kept after down/up
 - [x] Same with the non-Docker command: `npm start` 68/68 over HTTP; `npm test` 249 green
       (found and fixed: `npm test` failed on a clean clone before installing dependencies)
-- [ ] Push to a remote Git repository (GitHub) and send the link
+- [x] Pushed to https://github.com/dominictapangea/habit-quests (public); send the link to EndSpec

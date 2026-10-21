@@ -15,7 +15,7 @@ fills levels, and completing something every day builds a streak with a daily bo
 Needs Docker with Compose (Docker Desktop on Windows/macOS).
 
 ```bash
-git clone <this repository> habit-quests
+git clone https://github.com/dominictapangea/habit-quests.git
 cd habit-quests
 docker compose up
 ```
