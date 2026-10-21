@@ -3,7 +3,7 @@
 // every quest's `done`. No API or database involved.
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { baseXp, computeMe, dayInZone, isQuestDone, type Difficulty } from "../src/rules.js";
+import { baseXp, computeMe, dayInZone, isQuestDone, type Difficulty } from "../src/rules.ts";
 
 interface Line {
   x_now: string;

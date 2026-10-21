@@ -22,6 +22,14 @@ Tick each item when done; add new items as they come up.
   A past date is allowed (the quest is simply late). `null` means none.
 - `recurrence`: only `"daily"` or `null`, else 400 `invalid recurrence`.
 - Malformed `X-Now` (unparseable or without an offset): 400 `invalid X-Now`.
+- Ids are SQLite integers sent as strings (`"1"`, `"2"`); quests and completions have separate
+  sequences. Ids that are not integers (e.g. `q99`) are simply not found (404).
+- Empty body with `Content-Type: application/json` is accepted; malformed JSON -> 400
+  `invalid JSON`; unknown route -> 404 `not found`; `PUT /me` without a string `timezone`
+  -> 400 `invalid timezone`.
+- `POST /test/reset` also resets the time zone to `Europe/Bucharest` and the id sequences.
+- Storage: Node's built-in `node:sqlite` (no native build on a clean machine; needs Node
+  >= 22.13). Node runs the TypeScript files directly (type stripping), no build step.
 
 ## 1. Rules (`api/src/rules.ts`) + unit tests
 
@@ -38,19 +46,20 @@ Tick each item when done; add new items as they come up.
 
 ## 2. API (Fastify + SQLite)
 
-- [ ] SQLite schema: quests, completions (with undone flag), settings (time zone)
-- [ ] `X-Now` handling (400 `invalid X-Now` when malformed)
-- [ ] Input validation module (title, difficulty, due_date, recurrence) + unit tests
-- [ ] `POST /quests` with validation and exact error messages (lines 6, 7, 8)
-- [ ] `GET /quests` newest first with `done`
-- [ ] `POST /quests/:id/complete` 201 new / 200 existing / 404 (lines 9-11, 52)
-- [ ] `GET /completions` newest first; `DELETE /completions/:id` 204 / 404 (lines 37-39)
-- [ ] `GET /me`, `PUT /me` with IANA validation (line 50)
-- [ ] `POST /test/reset`
-- [ ] `created_at` as UTC with `Z`, no milliseconds
-- [ ] Data survives a restart
-- [ ] Replay test: all 68 recorded requests, mapping ids, comparing status and body
-- [ ] CORS for the UI
+- [x] SQLite schema: quests, completions (with undone flag), settings (time zone)
+- [x] `X-Now` handling (400 `invalid X-Now` when malformed)
+- [x] Input validation module (title, difficulty, due_date, recurrence) + unit tests
+- [x] `POST /quests` with validation and exact error messages (lines 6, 7, 8)
+- [x] `GET /quests` newest first with `done`
+- [x] `POST /quests/:id/complete` 201 new / 200 existing / 404 (lines 9-11, 52)
+- [x] `GET /completions` newest first; `DELETE /completions/:id` 204 / 404 (lines 37-39)
+- [x] `GET /me`, `PUT /me` with IANA validation (line 50)
+- [x] `POST /test/reset`
+- [x] `created_at` as UTC with `Z`, no milliseconds
+- [x] Data survives a restart
+- [x] Replay test: all 68 recorded requests, mapping ids, comparing status and body (`test/replay.test.ts`)
+- [x] Smoke test of the real server: CORS preflight with `X-Now`, data kept after restart
+- [x] CORS for the UI
 
 ## 3. UI (Next.js, English copy)
 

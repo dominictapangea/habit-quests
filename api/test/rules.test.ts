@@ -10,7 +10,7 @@ import {
   isValidTimeZone,
   levelFor,
   totalXp,
-} from "../src/rules.js";
+} from "../src/rules.ts";
 
 describe("dayInZone", () => {
   it("uses the calendar day of the given time zone", () => {
