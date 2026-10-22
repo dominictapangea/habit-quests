@@ -45,7 +45,7 @@ npm test
 
 Run it in the repository root (it installs dependencies first when they are missing). It runs:
 
-- **API (174 tests):**
+- **API (176 tests):**
   - `api/test/replay.test.ts` replays all 68 recorded requests in order, with their `X-Now`
     header, against the real Fastify app on a fresh database. It maps the recording's ids
     (`q1`, `c1`) to ours as they appear, and compares every status and every body exactly.
@@ -114,7 +114,8 @@ Line numbers refer to `docs/reference_recording.jsonl`.
 - **Ids** are SQLite integers sent as strings (`"1"`). Quests and completions have separate
   sequences. A non-integer id such as `q99` is simply not found (404).
 - **Other requests:**
-  - an empty body sent with `Content-Type: application/json` is accepted;
+  - an empty body is accepted whatever its `Content-Type` (PowerShell's `Invoke-RestMethod`
+    sends a form type on a bodyless POST); a non-empty body that is not JSON → 415;
   - malformed JSON → 400 `invalid JSON`;
   - unknown route → 404 `not found`;
   - `PUT /me` without a string `timezone` → 400 `invalid timezone`.
@@ -176,8 +177,10 @@ pagination; the page shows the last 8 completions.
   `http://localhost:3001`). Moving the API to another port or host needs a rebuild.
 - **Small UI gap:** on level-up the XP bar jumps straight to the new level's start instead of
   filling up first.
-- **One flaky run:** once, right after a Docker build, one API test failed (one of 174). Twelve
-  reruns all passed and I could not reproduce it. I suspect a timeout while the machine was busy.
+- **Slow SQLite on a busy Windows machine:** twice, with Docker running, the restart test took
+  about 9 s and hit Vitest's 5 s limit (once out of 174 tests each time). Reruns all passed. The
+  API tests now allow 30 s per test; the cause is probably the antivirus scanning new database
+  files, not the code.
 
 ## Use of AI
 

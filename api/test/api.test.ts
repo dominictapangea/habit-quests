@@ -65,6 +65,34 @@ describe("request edge cases", () => {
     await app.close();
   });
 
+  it("accepts an empty body sent with another content type (PowerShell sends a form type)", async () => {
+    const app = buildApp({ dbPath: freshDbPath() });
+    const quest = (
+      await app.inject({ method: "POST", url: "/quests", headers: NOW, payload: { title: "x", difficulty: "easy" } })
+    ).json();
+    const res = await app.inject({
+      method: "POST",
+      url: `/quests/${quest.id}/complete`,
+      headers: { ...NOW, "content-type": "application/x-www-form-urlencoded" },
+      payload: "",
+    });
+    expect(res.statusCode).toBe(201);
+    await app.close();
+  });
+
+  it("refuses a non-empty body that is not JSON with 415", async () => {
+    const app = buildApp({ dbPath: freshDbPath() });
+    const res = await app.inject({
+      method: "POST",
+      url: "/quests",
+      headers: { ...NOW, "content-type": "application/x-www-form-urlencoded" },
+      payload: "title=x&difficulty=easy",
+    });
+    expect(res.statusCode).toBe(415);
+    expect(res.json()).toEqual({ error: "unsupported media type, send JSON" });
+    await app.close();
+  });
+
   it("answers bad JSON and unknown routes with an error body", async () => {
     const app = buildApp({ dbPath: freshDbPath() });
     const bad = await app.inject({

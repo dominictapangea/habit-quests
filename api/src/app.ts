@@ -37,6 +37,14 @@ export function buildApp({ dbPath, logger = false, clock = () => new Date() }: A
     }
   });
 
+  // Any other content type: an empty body is fine (PowerShell's
+  // Invoke-RestMethod sends a form type on a POST with no body); a non-empty
+  // body that is not JSON is refused.
+  app.addContentTypeParser("*", { parseAs: "string" }, (_req, body, done) => {
+    if (body === "") return done(null, undefined);
+    done(Object.assign(new Error("unsupported media type, send JSON"), { statusCode: 415 }), undefined);
+  });
+
   app.decorateRequest("now", null as unknown as Date);
   app.addHook("onRequest", async (req, reply) => {
     const now = parseNow(req.headers["x-now"], clock());
