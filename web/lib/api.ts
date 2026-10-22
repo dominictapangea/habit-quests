@@ -62,6 +62,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const getMe = () => request<Me>("/me");
+export const setTimezone = (timezone: string) =>
+  request<Me>("/me", { method: "PUT", body: JSON.stringify({ timezone }) });
 export const getQuests = () => request<Quest[]>("/quests");
 export const createQuest = (quest: NewQuest) =>
   request<Quest>("/quests", { method: "POST", body: JSON.stringify(quest) });

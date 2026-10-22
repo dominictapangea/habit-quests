@@ -1,6 +1,45 @@
+import { useEffect, useRef, useState } from "react";
 import type { Me } from "@/lib/api";
 import { ScoreReels } from "./ScoreReels";
 import styles from "./ScoreHeader.module.css";
+
+const FILL_MS = 900;
+
+// The bar's shown fill. On a level-up it first fills to the end, then jumps
+// back to empty without animating and fills to the new level's progress.
+// Going down (an undo) or staying on the same level just animates.
+function useBarFill(level: number | null, progress: number) {
+  const [fill, setFill] = useState(progress);
+  const [instant, setInstant] = useState(false);
+  const lastLevel = useRef(level);
+
+  useEffect(() => {
+    const previous = lastLevel.current;
+    lastLevel.current = level;
+    if (previous === null || level === null || level <= previous) {
+      setFill(progress);
+      return;
+    }
+    setFill(1);
+    // Timers, not animation frames: frames pause in a background tab and the
+    // bar would stay empty until the tab came back.
+    let restart: ReturnType<typeof setTimeout> | undefined;
+    const timer = setTimeout(() => {
+      setInstant(true);
+      setFill(0);
+      restart = setTimeout(() => {
+        setInstant(false);
+        setFill(progress);
+      }, 50);
+    }, FILL_MS);
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(restart);
+    };
+  }, [level, progress]);
+
+  return { fill, instant };
+}
 
 const LADDER = [2, 4, 6, 8, 10, 12, 14];
 
@@ -13,6 +52,7 @@ export function ScoreHeader({ me }: { me: Me | null }) {
   const bonus = me ? dailyBonus(me.streak) : 0;
   const levelSize = me ? me.xp_into_level + me.xp_to_next_level : 1;
   const progress = me ? me.xp_into_level / levelSize : 0;
+  const { fill, instant } = useBarFill(me?.level ?? null, progress);
 
   return (
     <header className={styles.unit} aria-busy={me === null}>
@@ -40,8 +80,8 @@ export function ScoreHeader({ me }: { me: Me | null }) {
             aria-valuenow={me?.xp_into_level ?? 0}
           >
             <div
-              className={`${styles.fill} ${progress > 0 ? styles.filled : ""}`}
-              style={{ width: `${progress * 100}%` }}
+              className={`${styles.fill} ${fill > 0 ? styles.filled : ""}`}
+              style={{ width: `${fill * 100}%`, transition: instant ? "none" : undefined }}
             />
           </div>
           <div className={styles.meta}>

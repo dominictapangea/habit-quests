@@ -130,6 +130,9 @@ Line numbers refer to `docs/reference_recording.jsonl`.
   - The page lists open quests first, then done ones, keeping the API's newest-first order inside
     each group, so a Complete button is always near the top. The API order itself is unchanged.
   - On a phone the create form folds behind a "New quest" button, so the list comes first.
+  - The time zone is picked under the calendar from every IANA zone the browser knows. Changing it
+    reloads the page data; past completions keep their day (rule 7).
+  - On a level-up the XP bar first fills to the end, then restarts from empty on the new level.
 
 ## Summary: what I did, how I verified it, what I left out
 
@@ -153,8 +156,7 @@ How I verified it:
   including a restart to check that data persists.
 
 **Deliberately not done:** auth, multiple users, deployment, and a design system, as the brief
-asks. Editing or deleting quests is not in the API contract. There is no time-zone picker in the
-UI (the API supports `PUT /me`, but the brief does not ask the page for it). There is no
+asks. Editing or deleting quests is not in the API contract. There is no
 pagination; the page shows the last 8 completions.
 
 ## Where the solution is weakest
@@ -175,8 +177,6 @@ pagination; the page shows the last 8 completions.
   can briefly differ until the server's answer replaces it.
 - **The API address is built into the UI bundle** (`NEXT_PUBLIC_API_URL`, default
   `http://localhost:3001`). Moving the API to another port or host needs a rebuild.
-- **Small UI gap:** on level-up the XP bar jumps straight to the new level's start instead of
-  filling up first.
 - **Slow SQLite on a busy Windows machine:** twice, with Docker running, the restart test took
   about 9 s and hit Vitest's 5 s limit (once out of 174 tests each time). Reruns all passed. The
   API tests now allow 30 s per test; the cause is probably the antivirus scanning new database
@@ -184,9 +184,7 @@ pagination; the page shows the last 8 completions.
 
 ## Use of AI
 
-I used AI (Claude Code) to write most of the code, tests and this README step by step, under my
-direction. I reviewed every step, decided every open choice myself, and checked the rules against
-the recording's numbers and the clean-clone runs by hand.
+I used AI (Claude Code) to write most of the code, tests and README under my direction; I reviewed every step, made every open choice, and checked the rules against the recording and the clean-clone runs by hand.
 
 ## Things I noticed outside the task and did not fix
 

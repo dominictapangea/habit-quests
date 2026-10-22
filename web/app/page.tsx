@@ -7,12 +7,14 @@ import { QuestForm } from "@/components/QuestForm";
 import { QuestList } from "@/components/QuestList";
 import { RecentCompletions } from "@/components/RecentCompletions";
 import { ScoreHeader } from "@/components/ScoreHeader";
+import { TimezoneSelect } from "@/components/TimezoneSelect";
 import {
   completeQuest,
   createQuest,
   getCompletions,
   getMe,
   getQuests,
+  setTimezone,
   undoCompletion,
   type Completion,
   type NewQuest,
@@ -147,6 +149,16 @@ export default function Home() {
     }
   }
 
+  // Changing the time zone changes "today", so reload everything afterwards.
+  async function onTimezone(timezone: string) {
+    try {
+      await setTimezone(timezone);
+    } catch (e) {
+      setNotice(`Could not change the time zone: ${(e as Error).message}.`);
+    }
+    await refresh();
+  }
+
   // Failure notices go away on their own.
   useEffect(() => {
     if (!notice) return;
@@ -189,7 +201,12 @@ export default function Home() {
             <h2 id="calendar-tab" className="area-tab label">
               Streak calendar
             </h2>
-            {view && today && <LampCalendar days={view.completions.map((c) => c.day)} today={today} />}
+            {view && today && (
+              <>
+                <LampCalendar key={view.me.timezone} days={view.completions.map((c) => c.day)} today={today} />
+                <TimezoneSelect timezone={view.me.timezone} disabled={pending.length > 0} onChange={onTimezone} />
+              </>
+            )}
           </section>
 
           <section className="area" aria-labelledby="recent-tab">

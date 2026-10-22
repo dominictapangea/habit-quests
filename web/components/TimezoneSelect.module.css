@@ -1,0 +1,19 @@
+.zone {
+  display: grid;
+  gap: 6px;
+  padding: 0 18px 18px;
+}
+
+.zone select {
+  width: 100%;
+  cursor: pointer;
+}
+
+.zone select:disabled {
+  cursor: wait;
+}
+
+.hint {
+  color: var(--mute);
+  font-size: var(--size-small);
+}
